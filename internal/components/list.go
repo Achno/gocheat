@@ -76,5 +76,9 @@ func ListViewSimple(items []list.Item, delegate list.ItemDelegate, width, height
 	listview.SetFilteringEnabled(true)
 	listview.ShowPagination()
 
+	// change Filter and cursor foregorund colors
+	listview.FilterInput.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#f38ba8")).Bold(true)
+	listview.FilterInput.Cursor.Style = tlockstyles.Styles.Title
+
 	return listview
 }
