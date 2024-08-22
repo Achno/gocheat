@@ -14,24 +14,24 @@ import (
 	tlockstyles "github.com/Achno/gocheat/styles"
 )
 
-var items []list.Item
+// var items []list.Item
 
 func Init() {
 
-	items = ConvertSelectItemWrappers(config.GoCheatOptions.Items)
+	// items = ConvertSelectItemWrappers(config.GoCheatOptions.Items)
 
 }
 
-// var items = []list.Item{
-// 	SelectedItem{Title: "Maximize Window : meta+up", Tag: "Kwin"},
-// 	SelectedItem{Title: "Minimize Window : meta+m", Tag: "Kwin"},
-// 	SelectedItem{Title: "Rofi : fn+end", Tag: "Rofi"},
-// 	SelectedItem{Title: "Take a screenshot  : f2", Tag: "Flameshot"},
-// 	SelectedItem{Title: "Open the menu : f1", Tag: "wlogout"},
-// 	SelectedItem{Title: "cube : meta + w", Tag: "kwin"},
-// 	SelectedItem{Title: "resize Window : alt+k", Tag: "Flameshot"},
-// 	SelectedItem{Title: "Lock windows in place : ctrl+alt", Tag: "Kwin"},
-// }
+var items = []list.Item{
+	SelectedItem{Title: "Maximize Window : meta+up", Tag: "Kwin"},
+	SelectedItem{Title: "Minimize Window : meta+m", Tag: "Kwin"},
+	SelectedItem{Title: "Rofi : fn+end", Tag: "Rofi"},
+	SelectedItem{Title: "Take a screenshot  : f2", Tag: "Flameshot"},
+	SelectedItem{Title: "Open the menu : f1", Tag: "wlogout"},
+	SelectedItem{Title: "cube : meta + w", Tag: "kwin"},
+	SelectedItem{Title: "resize Window : alt+k", Tag: "Flameshot"},
+	SelectedItem{Title: "Lock windows in place : ctrl+alt", Tag: "Kwin"},
+}
 
 // Controls the filtering mode
 var FilterbyTag = false
@@ -173,6 +173,10 @@ func (screen SelectItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// For a status msg to be shown the title of the list needs to be visible
 			statusCmd := screen.listview.NewStatusMessage(tlockstyles.Styles.StatusMsg.Render(fmt.Sprintf("Filter by tag: %t", FilterbyTag)))
 			return screen, statusCmd
+
+		case "ctrl+h":
+			helpModel := InitializeHelpScreen()
+			return helpModel, cmd
 		}
 	}
 	// Update listview
