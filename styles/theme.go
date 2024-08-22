@@ -25,6 +25,8 @@ type Theme struct {
 
 	// Error
 	Error lipgloss.Color
+
+	Success lipgloss.Color
 }
 
 func InitTheme() Theme {
@@ -36,5 +38,6 @@ func InitTheme() Theme {
 		Accent:         "#b4befe",
 		Foreground:     "#cdd6f4",
 		Error:          "#f38ba8",
+		Success:        "#a6e3a1",
 	}
 }

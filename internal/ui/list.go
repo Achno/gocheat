@@ -3,11 +3,13 @@ package ui
 import (
 	"fmt"
 	"io"
+	"os"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"golang.org/x/term"
 
 	"github.com/Achno/gocheat/config"
 	"github.com/Achno/gocheat/internal/components"
@@ -129,8 +131,8 @@ var selectItemKeys = selectItemKeyMap{
 		key.WithHelp("esc", "exit filtering"),
 	),
 	FilterMode: key.NewBinding(
-		key.WithKeys("ctrl+f"),
-		key.WithHelp("ctrl+f", "filter tag"),
+		key.WithKeys("ctrl+h"),
+		key.WithHelp("ctrl+h", "help"),
 	),
 }
 
@@ -177,6 +179,10 @@ func (screen SelectItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+h":
 			helpModel := InitializeHelpScreen()
 			return helpModel, cmd
+
+		case "ctrl+j":
+			InputModel := InitInputFormScreen()
+			return InputModel, cmd
 		}
 	}
 	// Update listview
@@ -213,8 +219,10 @@ func (screen SelectItemScreen) View() string {
 		items...,
 	)
 
+	// get terminal dimensions
+	width, height, _ := term.GetSize(int(os.Stdout.Fd()))
 	// Place list in the center
-	return lipgloss.Place(screen.listview.Width(), screen.listview.Height(), lipgloss.Center, lipgloss.Center, joinedItems)
+	return lipgloss.Place(width, height, lipgloss.Center, lipgloss.Center, joinedItems)
 }
 
 // ConvertSelectItemWrappers converts []SelectItemWrapper to []list.Item

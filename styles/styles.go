@@ -67,6 +67,8 @@ type GCheatStyle struct {
 	TimeLeftInactive lipgloss.Style
 
 	StatusMsg lipgloss.Style
+
+	Success lipgloss.Style
 }
 
 // Initializes the styles
@@ -103,6 +105,7 @@ func InitializeStyles(theme Theme) {
 		ListItemInactive: with(paddedItem),
 		TimeLeftInactive: with(base).Foreground(theme.BackgroundOver),
 		StatusMsg:        with(base).Padding(0, 1).Background(theme.Accent).Foreground(theme.Background).Bold(true),
+		Success:          with(base).Foreground(theme.Success).Bold(true),
 	}
 
 	// Initialize help
