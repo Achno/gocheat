@@ -71,14 +71,15 @@ func (d SelectItemDelegate) Render(w io.Writer, m list.Model, index int, listIte
 //
 // Impliments: Keymap interface
 type selectItemKeyMap struct {
-	Up     key.Binding
-	Down   key.Binding
-	Filter key.Binding
-	Back   key.Binding
+	Up         key.Binding
+	Down       key.Binding
+	Filter     key.Binding
+	Back       key.Binding
+	FilterMode key.Binding
 }
 
 func (k selectItemKeyMap) ShortHelp() []key.Binding {
-	return []key.Binding{k.Up, k.Down, k.Filter, k.Back}
+	return []key.Binding{k.Up, k.Down, k.Filter, k.Back, k.FilterMode}
 }
 
 func (k selectItemKeyMap) FullHelp() [][]key.Binding {
@@ -87,6 +88,7 @@ func (k selectItemKeyMap) FullHelp() [][]key.Binding {
 		{k.Down},
 		{k.Filter},
 		{k.Back},
+		{k.FilterMode},
 	}
 }
 
@@ -102,11 +104,15 @@ var selectItemKeys = selectItemKeyMap{
 	),
 	Filter: key.NewBinding(
 		key.WithKeys("filter", "/"),
-		key.WithHelp("/", "filter the list"),
+		key.WithHelp("/", "filter"),
 	),
 	Back: key.NewBinding(
 		key.WithKeys("esc"),
 		key.WithHelp("esc", "exit filtering"),
+	),
+	FilterMode: key.NewBinding(
+		key.WithKeys("ctrl+f"),
+		key.WithHelp("ctrl+f", "filter tag"),
 	),
 }
 
@@ -146,8 +152,10 @@ func (screen SelectItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "ctrl+f":
 			FilterbyTag = !FilterbyTag
+			// For a status msg to be shown the title of the list needs to be visible
+			statusCmd := screen.listview.NewStatusMessage(tlockstyles.Styles.StatusMsg.Render(fmt.Sprintf("Filter by tag: %t", FilterbyTag)))
+			return screen, statusCmd
 		}
-
 	}
 	// Update listview
 	screen.listview, cmd = screen.listview.Update(msg)

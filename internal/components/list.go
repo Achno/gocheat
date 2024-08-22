@@ -68,13 +68,17 @@ func ListViewSimple(items []list.Item, delegate list.ItemDelegate, width, height
 	listview := list.New(items, delegate, width, height)
 
 	listview.SetShowHelp(false)
-	listview.SetShowTitle(false)
+	listview.SetShowTitle(true)
 	listview.SetShowFilter(true)
 	listview.SetShowStatusBar(false)
 	listview.SetShowPagination(false)
 	listview.DisableQuitKeybindings()
 	listview.SetFilteringEnabled(true)
 	listview.ShowPagination()
+
+	// hide the title of the list , but allow it to exist to show notifications with listview.NewStatusMessage(...)
+	listview.Title = ""
+	listview.Styles.Title = tlockstyles.Styles.Base
 
 	// change Filter and cursor foregorund colors
 	listview.FilterInput.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#f38ba8")).Bold(true)

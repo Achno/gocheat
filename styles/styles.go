@@ -65,6 +65,8 @@ type GCheatStyle struct {
 
 	// Time left for inactive cards
 	TimeLeftInactive lipgloss.Style
+
+	StatusMsg lipgloss.Style
 }
 
 // Initializes the styles
@@ -100,6 +102,7 @@ func InitializeStyles(theme Theme) {
 			BorderForeground(theme.Accent),
 		ListItemInactive: with(paddedItem),
 		TimeLeftInactive: with(base).Foreground(theme.BackgroundOver),
+		StatusMsg:        with(base).Padding(0, 1).Background(theme.Accent).Foreground(theme.Background).Bold(true),
 	}
 
 	// Initialize help
