@@ -9,9 +9,29 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
+	"github.com/Achno/gocheat/config"
 	"github.com/Achno/gocheat/internal/components"
 	tlockstyles "github.com/Achno/gocheat/styles"
 )
+
+var items []list.Item
+
+func Init() {
+
+	items = ConvertSelectItemWrappers(config.GoCheatOptions.Items)
+
+}
+
+// var items = []list.Item{
+// 	SelectedItem{Title: "Maximize Window : meta+up", Tag: "Kwin"},
+// 	SelectedItem{Title: "Minimize Window : meta+m", Tag: "Kwin"},
+// 	SelectedItem{Title: "Rofi : fn+end", Tag: "Rofi"},
+// 	SelectedItem{Title: "Take a screenshot  : f2", Tag: "Flameshot"},
+// 	SelectedItem{Title: "Open the menu : f1", Tag: "wlogout"},
+// 	SelectedItem{Title: "cube : meta + w", Tag: "kwin"},
+// 	SelectedItem{Title: "resize Window : alt+k", Tag: "Flameshot"},
+// 	SelectedItem{Title: "Lock windows in place : ctrl+alt", Tag: "Kwin"},
+// }
 
 // Controls the filtering mode
 var FilterbyTag = false
@@ -24,16 +44,16 @@ var selectUserAscii = `
 
 // impliments list.Item interface : FilterValue()
 type SelectedItem struct {
-	title string
-	tag   string
+	Title string `json:"title"`
+	Tag   string `json:"tag"`
 }
 
 // The value the fuzzy filter , filters by
 func (item SelectedItem) FilterValue() string {
 	if FilterbyTag {
-		return item.tag
+		return item.Tag
 	} else {
-		return item.title
+		return item.Title
 	}
 }
 
@@ -62,7 +82,7 @@ func (d SelectItemDelegate) Render(w io.Writer, m list.Model, index int, listIte
 	}
 
 	// Render the title of the item and its tag
-	fmt.Fprint(w, renderer(65, string(item.title), string(item.tag)))
+	fmt.Fprint(w, renderer(65, string(item.Title), string(item.Tag)))
 }
 
 // Explanation: Keybindings that the list listens on.
@@ -193,13 +213,15 @@ func (screen SelectItemScreen) View() string {
 	return lipgloss.Place(screen.listview.Width(), screen.listview.Height(), lipgloss.Center, lipgloss.Center, joinedItems)
 }
 
-var items = []list.Item{
-	SelectedItem{title: "Maximize Window : meta+up", tag: "Kwin"},
-	SelectedItem{title: "Minimize Window : meta+m", tag: "Kwin"},
-	SelectedItem{title: "Rofi : fn+end", tag: "Rofi"},
-	SelectedItem{title: "Take a screenshot  : f2", tag: "Flameshot"},
-	SelectedItem{title: "Open the menu : f1", tag: "wlogout"},
-	SelectedItem{title: "cube : meta + w", tag: "kwin"},
-	SelectedItem{title: "resize Window : alt+k", tag: "Flameshot"},
-	SelectedItem{title: "Lock windows in place : ctrl+alt", tag: "Kwin"},
+// ConvertSelectItemWrappers converts []SelectItemWrapper to []list.Item
+func ConvertSelectItemWrappers(wrappers []config.SelectItemWrapper) []list.Item {
+	var items []list.Item
+	for _, wrapper := range wrappers {
+		item := SelectedItem{
+			Title: wrapper.Title,
+			Tag:   wrapper.Tag,
+		}
+		items = append(items, item)
+	}
+	return items
 }
