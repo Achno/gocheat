@@ -175,8 +175,11 @@ func (screen SelectItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+x":
 			index := screen.listview.Index()
 			screen.listview.RemoveItem(index)
+			statusCmd := screen.listview.NewStatusMessage(tlockstyles.Styles.StatusMsg.Render("Deleted item"))
 			removeItemFromConfig(ConvertListItemsToSelectItemWrappers(items))
 			InitSelectItemScreen()
+			return screen, statusCmd
+
 		}
 	}
 	// Update listview
