@@ -86,8 +86,20 @@ func BuildHelpMenu() string {
 				Desc: "Toggle filter list by tag",
 			},
 			{
+				Key:  "ctrl+j",
+				Desc: "Add an item to the list",
+			},
+			{
+				Key:  "ctrl+x",
+				Desc: "Delete focused item from the list",
+			},
+			{
 				Key:  "esc",
 				Desc: "Exit filter state",
+			},
+			{
+				Key:  "ctrl+c",
+				Desc: "Exit the app",
 			},
 		},
 		InputForm: []HelpKeyBindingSpec{
@@ -105,7 +117,11 @@ func BuildHelpMenu() string {
 			},
 			{
 				Key:  "esc",
-				Desc: "Go back to the previous screen",
+				Desc: "Go back to the screen with the list",
+			},
+			{
+				Key:  "ctrl+c",
+				Desc: "Exit the app",
 			},
 		},
 	}
@@ -113,7 +129,7 @@ func BuildHelpMenu() string {
 	return lipgloss.JoinVertical(
 		lipgloss.Center,
 		tlockstyles.Styles.Title.Render(helpAsciiArt), "",
-		tlockstyles.Styles.SubText.Render("Keybindings to move around gocheat"), "",
+		tlockstyles.Styles.SubText.Render("Keybindings to move around (esc to go back)"), "",
 		BuildHelpItem("List", helpKeys.List),
 		BuildHelpItem("Input Form", helpKeys.InputForm),
 	)
