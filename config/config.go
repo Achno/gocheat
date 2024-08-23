@@ -92,3 +92,26 @@ func CreateConfig() (string, error) {
 	return configFilePath, nil
 
 }
+
+func UpdateConfig() error {
+
+	updatedConfig, err := json.MarshalIndent(GoCheatOptions, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error adding Item to config.json: %w", err)
+	}
+
+	configFilePath, err := CreateConfig()
+
+	if err != nil {
+		return err
+	}
+
+	// Save the updated config to config.json
+	err = os.WriteFile(configFilePath, updatedConfig, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}

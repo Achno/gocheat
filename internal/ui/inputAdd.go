@@ -3,6 +3,7 @@ package ui
 import (
 	"os"
 
+	"github.com/Achno/gocheat/config"
 	tlockstyles "github.com/Achno/gocheat/styles"
 
 	"github.com/charmbracelet/bubbles/cursor"
@@ -115,6 +116,11 @@ func (screen InputFormScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return screen, tea.Batch(cmds...)
 
+		case "enter":
+			AddItemToList(screen)
+			ItemScreen := InitSelectItemScreen()
+			return ItemScreen, nil
+
 		case "esc":
 			ItemScreen := InitSelectItemScreen()
 			return ItemScreen, nil
@@ -151,4 +157,29 @@ func (screen InputFormScreen) View() string {
 // Init function to initialize the program
 func (screen InputFormScreen) Init() tea.Cmd {
 	return textinput.Blink
+}
+
+// Adds an item to the list depending on the values of the form
+func AddItemToList(inputScreen InputFormScreen) error {
+
+	// create the SelectItem from the form
+	item := SelectedItem{
+		Title: inputScreen.Forms[0].TextInput.Value(),
+		Tag:   inputScreen.Forms[1].TextInput.Value(),
+	}
+
+	items = append(items, item)
+
+	// write the item to config.json
+	wrapper := config.SelectItemWrapper{
+		Title: inputScreen.Forms[0].TextInput.Value(),
+		Tag:   inputScreen.Forms[1].TextInput.Value(),
+	}
+
+	config.GoCheatOptions.Items = append(config.GoCheatOptions.Items, wrapper)
+
+	config.UpdateConfig()
+
+	return nil
+
 }

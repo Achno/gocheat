@@ -16,24 +16,24 @@ import (
 	tlockstyles "github.com/Achno/gocheat/styles"
 )
 
-// var items []list.Item
+var items []list.Item
 
 func Init() {
 
-	// items = ConvertSelectItemWrappers(config.GoCheatOptions.Items)
+	items = ConvertSelectItemWrappers(config.GoCheatOptions.Items)
 
 }
 
-var items = []list.Item{
-	SelectedItem{Title: "Maximize Window : meta+up", Tag: "Kwin"},
-	SelectedItem{Title: "Minimize Window : meta+m", Tag: "Kwin"},
-	SelectedItem{Title: "Rofi : fn+end", Tag: "Rofi"},
-	SelectedItem{Title: "Take a screenshot  : f2", Tag: "Flameshot"},
-	SelectedItem{Title: "Open the menu : f1", Tag: "wlogout"},
-	SelectedItem{Title: "cube : meta + w", Tag: "kwin"},
-	SelectedItem{Title: "resize Window : alt+k", Tag: "Flameshot"},
-	SelectedItem{Title: "Lock windows in place : ctrl+alt", Tag: "Kwin"},
-}
+// var items = []list.Item{
+// 	SelectedItem{Title: "Maximize Window : meta+up", Tag: "Kwin"},
+// 	SelectedItem{Title: "Minimize Window : meta+m", Tag: "Kwin"},
+// 	SelectedItem{Title: "Rofi : fn+end", Tag: "Rofi"},
+// 	SelectedItem{Title: "Take a screenshot  : f2", Tag: "Flameshot"},
+// 	SelectedItem{Title: "Open the menu : f1", Tag: "wlogout"},
+// 	SelectedItem{Title: "cube : meta + w", Tag: "kwin"},
+// 	SelectedItem{Title: "resize Window : alt+k", Tag: "Flameshot"},
+// 	SelectedItem{Title: "Lock windows in place : ctrl+alt", Tag: "Kwin"},
+// }
 
 // Controls the filtering mode
 var FilterbyTag = false
