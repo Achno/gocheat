@@ -1,6 +1,7 @@
 package styles
 
 import (
+	"github.com/Achno/gocheat/config"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -34,8 +35,8 @@ func InitTheme() Theme {
 		Name:           "Catppuccin",
 		Background:     "#181825",
 		BackgroundOver: "#7f849c",
-		SubText:        "#6c7086",
-		Accent:         "#b4befe",
+		SubText:        lipgloss.Color(config.GoCheatOptions.Styles.SubText),
+		Accent:         lipgloss.Color(config.GoCheatOptions.Styles.Accent),
 		Foreground:     "#cdd6f4",
 		Error:          "#f38ba8",
 		Success:        "#a6e3a1",

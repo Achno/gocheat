@@ -15,8 +15,14 @@ type SelectItemWrapper struct {
 	Tag   string `json:"tag"`
 }
 
+type ThemeWrapper struct {
+	SubText string `json:"subtext"`
+	Accent  string `json:"accent"`
+}
+
 type Options struct {
-	Items []SelectItemWrapper `json:"items"`
+	Items  []SelectItemWrapper `json:"items"`
+	Styles ThemeWrapper        `json:"styles"`
 }
 
 // global options object
