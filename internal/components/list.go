@@ -48,6 +48,11 @@ func Paginator(listview list.Model) string {
 	// Paginator items
 	paginatorItems := make([]string, totalPages)
 
+	// render only 5 dots (pages) at maximum
+	if totalPages > 5 {
+		totalPages = 5
+	}
+
 	// Add paginator dots
 	for index := 0; index < totalPages; index++ {
 		renderer := tlockstyles.Styles.SubText.Copy().Bold(true).Render

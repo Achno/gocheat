@@ -18,22 +18,10 @@ import (
 
 var items []list.Item
 
-func Init() {
+func InitItems() {
 
 	items = ConvertSelectItemWrappers(config.GoCheatOptions.Items)
-
 }
-
-// var items = []list.Item{
-// 	SelectedItem{Title: "Maximize Window : meta+up", Tag: "Kwin"},
-// 	SelectedItem{Title: "Minimize Window : meta+m", Tag: "Kwin"},
-// 	SelectedItem{Title: "Rofi : fn+end", Tag: "Rofi"},
-// 	SelectedItem{Title: "Take a screenshot  : f2", Tag: "Flameshot"},
-// 	SelectedItem{Title: "Open the menu : f1", Tag: "wlogout"},
-// 	SelectedItem{Title: "cube : meta + w", Tag: "kwin"},
-// 	SelectedItem{Title: "resize Window : alt+k", Tag: "Flameshot"},
-// 	SelectedItem{Title: "Lock windows in place : ctrl+alt", Tag: "Kwin"},
-// }
 
 // Controls the filtering mode
 var FilterbyTag = false
@@ -183,6 +171,12 @@ func (screen SelectItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+j":
 			InputModel := InitInputFormScreen()
 			return InputModel, cmd
+
+		case "ctrl+x":
+			index := screen.listview.Index()
+			screen.listview.RemoveItem(index)
+			removeItemFromConfig(ConvertListItemsToSelectItemWrappers(items))
+			InitSelectItemScreen()
 		}
 	}
 	// Update listview
@@ -236,4 +230,40 @@ func ConvertSelectItemWrappers(wrappers []config.SelectItemWrapper) []list.Item 
 		items = append(items, item)
 	}
 	return items
+}
+
+// Convert []list.Item to []SelectItemWrapper
+func ConvertListItemsToSelectItemWrappers(items []list.Item) []config.SelectItemWrapper {
+	var wrappers []config.SelectItemWrapper
+	for _, item := range items {
+		// Assert that item is of type SelectedItem
+		selectedItem, ok := item.(SelectedItem)
+		if !ok {
+			// Handle the case where item is not of type SelectedItem
+			continue // or return an error or log the issue as needed
+		}
+
+		// Create SelectItemWrapper from SelectedItem
+		wrapper := config.SelectItemWrapper{
+			Title: selectedItem.Title,
+			Tag:   selectedItem.Tag,
+		}
+		wrappers = append(wrappers, wrapper)
+	}
+	return wrappers
+}
+
+// Removes an Item from the config.json
+func removeItemFromConfig(slice []config.SelectItemWrapper) error {
+
+	// config.GoCheatOptions.Items = DeepCopySlice(slice)
+	config.GoCheatOptions.Items = slice
+
+	err := config.UpdateConfig()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

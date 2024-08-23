@@ -19,15 +19,13 @@ func main() {
 	config.Init()
 
 	// Make sure that the items are read from the config file
-	ui.Init()
+	ui.InitItems()
 
 	// create the Screen where you view items
 	model := ui.InitSelectItemScreen()
 
 	// Initialize all lipgloss styles based on the theme and accessed by 'Styles' variable
 	tlockstyles.InitializeStyles(tlockstyles.InitTheme())
-
-	//! fmt.Printf("CONFIGGGGGGGGG: %s", config.GoCheatOptions.Items)
 
 	if _, err := tea.NewProgram(model, tea.WithAltScreen()).Run(); err != nil {
 		fmt.Println("Error running program:", err)

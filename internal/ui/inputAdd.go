@@ -119,6 +119,7 @@ func (screen InputFormScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "enter":
 			AddItemToList(screen)
+			InitItems()
 			ItemScreen := InitSelectItemScreen()
 			return ItemScreen, nil
 
@@ -171,21 +172,19 @@ func AddItemToList(inputScreen InputFormScreen) error {
 
 	items = append(items, item)
 
-	go func() {
-		// write the item to config.json
-		wrapper := config.SelectItemWrapper{
-			Title: inputScreen.Forms[0].TextInput.Value(),
-			Tag:   inputScreen.Forms[1].TextInput.Value(),
-		}
+	// write the item to config.json
+	wrapper := config.SelectItemWrapper{
+		Title: inputScreen.Forms[0].TextInput.Value(),
+		Tag:   inputScreen.Forms[1].TextInput.Value(),
+	}
 
-		config.GoCheatOptions.Items = append(config.GoCheatOptions.Items, wrapper)
+	config.GoCheatOptions.Items = append(config.GoCheatOptions.Items, wrapper)
 
-		err := config.UpdateConfig()
+	err := config.UpdateConfig()
 
-		if err != nil {
-			log.Fatalf("Failed writing item to config.json: %v", err)
-		}
-	}()
+	if err != nil {
+		log.Fatalf("Failed writing item to config.json: %v", err)
+	}
 
 	return nil
 
