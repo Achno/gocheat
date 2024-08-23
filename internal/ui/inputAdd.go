@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"log"
 	"os"
 
 	"github.com/Achno/gocheat/config"
@@ -170,15 +171,21 @@ func AddItemToList(inputScreen InputFormScreen) error {
 
 	items = append(items, item)
 
-	// write the item to config.json
-	wrapper := config.SelectItemWrapper{
-		Title: inputScreen.Forms[0].TextInput.Value(),
-		Tag:   inputScreen.Forms[1].TextInput.Value(),
-	}
+	go func() {
+		// write the item to config.json
+		wrapper := config.SelectItemWrapper{
+			Title: inputScreen.Forms[0].TextInput.Value(),
+			Tag:   inputScreen.Forms[1].TextInput.Value(),
+		}
 
-	config.GoCheatOptions.Items = append(config.GoCheatOptions.Items, wrapper)
+		config.GoCheatOptions.Items = append(config.GoCheatOptions.Items, wrapper)
 
-	config.UpdateConfig()
+		err := config.UpdateConfig()
+
+		if err != nil {
+			log.Fatalf("Failed writing item to config.json: %v", err)
+		}
+	}()
 
 	return nil
 
