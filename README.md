@@ -2,10 +2,10 @@
 <div align = center><img src="assets/file.png"><br><br>
 
 &ensp;[<kbd> <br> Overview <br> </kbd>](#overview-)&ensp;
-&ensp;[<kbd> <br> Theme <br> </kbd>](#themes)&ensp;
-&ensp;[<kbd> <br> Usage <br> </kbd>](#usage)&ensp;
-&ensp;[<kbd> <br> Installation <br> </kbd>](#installation)&ensp;
-&ensp;[<kbd> <br> Contributions <br> </kbd>](#contributions)&ensp;
+&ensp;[<kbd> <br> Theme <br> </kbd>](#themes-)&ensp;
+&ensp;[<kbd> <br> Usage <br> </kbd>](#usage-)&ensp;
+&ensp;[<kbd> <br> Installation <br> </kbd>](#installation-)&ensp;
+&ensp;[<kbd> <br> Contributions <br> </kbd>](#contributions-)&ensp;
 <br><br><br><br></div>
 
 
@@ -99,7 +99,7 @@ Once you have launched the TUI you can hit `ctrl+h` to show the Help screen whic
 
 Notes 🗒️: You can modify the `~/.config/gocheat/config.json` directly to add,remove,edit entries
 
-# Instalation 📦
+# Instalatlion 📦
 
 ### Arch linux - AUR ( soon ) 
 
