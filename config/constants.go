@@ -6,7 +6,7 @@ const (
 )
 
 var (
-	// Write default content to the file
+	// Default New user config.json
 	jsonTemplate = map[string]interface{}{
 		"styles": map[string]string{
 			"subtext": "#6c7086",

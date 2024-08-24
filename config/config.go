@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 )
 
-type SelectItemWrapper struct {
+type ItemWrapper struct {
 	Title string `json:"title"`
 	Tag   string `json:"tag"`
 }
@@ -21,8 +21,8 @@ type ThemeWrapper struct {
 }
 
 type Options struct {
-	Items  []SelectItemWrapper `json:"items"`
-	Styles ThemeWrapper        `json:"styles"`
+	Items  []ItemWrapper `json:"items"`
+	Styles ThemeWrapper  `json:"styles"`
 }
 
 // global options object
@@ -99,6 +99,7 @@ func CreateConfig() (string, error) {
 
 }
 
+// updates config.json with the new Values of the GoCheatOptions config object
 func UpdateConfig() error {
 
 	updatedConfig, err := json.MarshalIndent(GoCheatOptions, "", "  ")

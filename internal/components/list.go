@@ -3,7 +3,7 @@ package components
 import (
 	"strings"
 
-	tlockstyles "github.com/Achno/gocheat/styles"
+	cheatstyles "github.com/Achno/gocheat/styles"
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/lipgloss"
@@ -25,9 +25,9 @@ func listItemImpl(width int, title, suffix string, spacerStyle, style lipgloss.S
 func ListItemActive(width int, title, suffix string) string {
 	return listItemImpl(
 		width,
-		tlockstyles.Styles.Title.Render(title),
-		tlockstyles.Styles.Base.Render(tlockstyles.Styles.Title.Render(suffix)),
-		tlockstyles.Styles.Base, tlockstyles.Styles.ListItemActive,
+		cheatstyles.Styles.Title.Render(title),
+		cheatstyles.Styles.Base.Render(cheatstyles.Styles.Title.Render(suffix)),
+		cheatstyles.Styles.Base, cheatstyles.Styles.ListItemActive,
 	)
 }
 
@@ -35,9 +35,9 @@ func ListItemActive(width int, title, suffix string) string {
 func ListItemInactive(width int, title, suffix string) string {
 	return listItemImpl(
 		width,
-		tlockstyles.Styles.SubText.Render(title),
-		tlockstyles.Styles.SubText.Render(suffix),
-		tlockstyles.Styles.SubText, tlockstyles.Styles.ListItemInactive,
+		cheatstyles.Styles.SubText.Render(title),
+		cheatstyles.Styles.SubText.Render(suffix),
+		cheatstyles.Styles.SubText, cheatstyles.Styles.ListItemInactive,
 	)
 }
 
@@ -55,10 +55,10 @@ func Paginator(listview list.Model) string {
 
 	// Add paginator dots
 	for index := 0; index < totalPages; index++ {
-		renderer := tlockstyles.Styles.SubText.Copy().Bold(true).Render
+		renderer := cheatstyles.Styles.SubText.Copy().Bold(true).Render
 
 		if index == listview.Paginator.Page {
-			renderer = tlockstyles.Styles.Title.Render
+			renderer = cheatstyles.Styles.Title.Render
 		}
 
 		paginatorItems = append(paginatorItems, renderer("•"))
@@ -83,11 +83,11 @@ func ListViewSimple(items []list.Item, delegate list.ItemDelegate, width, height
 
 	// hide the title of the list , but allow it to exist to show notifications with listview.NewStatusMessage(...)
 	listview.Title = ""
-	listview.Styles.Title = tlockstyles.Styles.Base
+	listview.Styles.Title = cheatstyles.Styles.Base
 
 	// change Filter and cursor foregorund colors
 	listview.FilterInput.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#f38ba8")).Bold(true)
-	listview.FilterInput.Cursor.Style = tlockstyles.Styles.Title
+	listview.FilterInput.Cursor.Style = cheatstyles.Styles.Title
 
 	return listview
 }

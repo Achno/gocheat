@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/Achno/gocheat/config"
-	tlockstyles "github.com/Achno/gocheat/styles"
+	cheatstyles "github.com/Achno/gocheat/styles"
 
 	"github.com/charmbracelet/bubbles/cursor"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -25,6 +25,35 @@ type InputFormSpec struct {
 	TextInput   textinput.Model
 }
 
+// BuildInputItem renders a single form item
+func BuildInputItem(formItem InputFormSpec) string {
+	items := make([]string, 0)
+
+	// Add title
+	items = append(items, cheatstyles.Styles.Title.Render(formItem.Title), "")
+
+	// Add description
+	items = append(items, cheatstyles.Dimmed(formItem.Desc), "")
+
+	// Render the text input with the placeholder
+	items = append(items, formItem.TextInput.View(), "")
+
+	return lipgloss.JoinVertical(lipgloss.Left, items...)
+}
+
+// BuildInputMenu renders the entire form screen
+func BuildInputMenu(formItems []InputFormSpec) string {
+	return lipgloss.JoinVertical(
+		lipgloss.Center,
+		cheatstyles.Styles.Title.Render(addItemAscii), "",
+		cheatstyles.Styles.SubText.Render("Add a keybind (The tag is optional)"), "",
+		"\n",
+		BuildInputItem(formItems[0]),
+		BuildInputItem(formItems[1]),
+	)
+}
+
+// FormScreen Model impliments tea.Model
 type InputFormScreen struct {
 	Forms      []InputFormSpec
 	FocusIndex int
@@ -37,10 +66,11 @@ func InitInputFormScreen() InputFormScreen {
 		Forms: make([]InputFormSpec, 2),
 	}
 
+	// Initialize styles and text of forms
 	for i := range model.Forms {
 		t := textinput.New()
-		t.Cursor.Style = tlockstyles.Styles.Title
-		t.TextStyle = tlockstyles.Styles.Title
+		t.Cursor.Style = cheatstyles.Styles.Title
+		t.TextStyle = cheatstyles.Styles.Title
 		t.Placeholder = "Placeholder"
 		t.CharLimit = 60
 		t.Prompt = "➤ "
@@ -68,34 +98,6 @@ func InitInputFormScreen() InputFormScreen {
 	return model
 }
 
-// BuildInputItem renders a single form item
-func BuildInputItem(formItem InputFormSpec) string {
-	items := make([]string, 0)
-
-	// Add title
-	items = append(items, tlockstyles.Styles.Title.Render(formItem.Title), "")
-
-	// Add description
-	items = append(items, tlockstyles.Dimmed(formItem.Desc), "")
-
-	// Render the text input with the placeholder
-	items = append(items, formItem.TextInput.View(), "")
-
-	return lipgloss.JoinVertical(lipgloss.Left, items...)
-}
-
-// BuildInputMenu renders the entire form screen
-func BuildInputMenu(formItems []InputFormSpec) string {
-	return lipgloss.JoinVertical(
-		lipgloss.Center,
-		tlockstyles.Styles.Title.Render(addItemAscii), "",
-		tlockstyles.Styles.SubText.Render("Add a keybind (The tag is optional)"), "",
-		"\n",
-		BuildInputItem(formItems[0]),
-		BuildInputItem(formItems[1]),
-	)
-}
-
 // Update function to handle user input and update the model
 func (screen InputFormScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -107,12 +109,12 @@ func (screen InputFormScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			for i := range screen.Forms {
 				if i == screen.FocusIndex {
 					cmds[i] = screen.Forms[i].TextInput.Focus()
-					screen.Forms[i].TextInput.PromptStyle = tlockstyles.Styles.Title
-					screen.Forms[i].TextInput.TextStyle = tlockstyles.Styles.Title
+					screen.Forms[i].TextInput.PromptStyle = cheatstyles.Styles.Title
+					screen.Forms[i].TextInput.TextStyle = cheatstyles.Styles.Title
 				} else {
 					screen.Forms[i].TextInput.Blur()
-					screen.Forms[i].TextInput.PromptStyle = tlockstyles.Styles.Success
-					screen.Forms[i].TextInput.TextStyle = tlockstyles.Styles.Success
+					screen.Forms[i].TextInput.PromptStyle = cheatstyles.Styles.Success
+					screen.Forms[i].TextInput.TextStyle = cheatstyles.Styles.Success
 				}
 			}
 			return screen, tea.Batch(cmds...)
@@ -120,11 +122,11 @@ func (screen InputFormScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			AddItemToList(screen)
 			InitItems()
-			ItemScreen := InitSelectItemScreen()
+			ItemScreen := InitItemScreen()
 			return ItemScreen, nil
 
 		case "esc":
-			ItemScreen := InitSelectItemScreen()
+			ItemScreen := InitItemScreen()
 			return ItemScreen, nil
 
 		case "ctrl+c":
@@ -153,19 +155,18 @@ func (screen InputFormScreen) View() string {
 	width, height, _ := term.GetSize(int(os.Stdout.Fd()))
 
 	return lipgloss.Place(width, height, lipgloss.Center, lipgloss.Center, BuildInputMenu(screen.Forms))
-	// return BuildInputMenu(screen.Forms)
 }
 
-// Init function to initialize the program
+// Init function to initialize a blinking cursor
 func (screen InputFormScreen) Init() tea.Cmd {
 	return textinput.Blink
 }
 
-// Adds an item to the list depending on the values of the form
+// Adds an item to the list depending on the values of the form and writes it to config.json
 func AddItemToList(inputScreen InputFormScreen) error {
 
-	// create the SelectItem from the form
-	item := SelectedItem{
+	// create the Item from the form
+	item := Item{
 		Title: inputScreen.Forms[0].TextInput.Value(),
 		Tag:   inputScreen.Forms[1].TextInput.Value(),
 	}
@@ -173,7 +174,7 @@ func AddItemToList(inputScreen InputFormScreen) error {
 	items = append(items, item)
 
 	// write the item to config.json
-	wrapper := config.SelectItemWrapper{
+	wrapper := config.ItemWrapper{
 		Title: inputScreen.Forms[0].TextInput.Value(),
 		Tag:   inputScreen.Forms[1].TextInput.Value(),
 	}

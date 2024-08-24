@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	tlockstyles "github.com/Achno/gocheat/styles"
+	cheatstyles "github.com/Achno/gocheat/styles"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -38,15 +38,15 @@ func BuildHelpItem(title string, keys []HelpKeyBindingSpec) string {
 	items := make([]string, 0)
 
 	// Add title ex. List
-	items = append(items, tlockstyles.Styles.Title.Render(title), "")
+	items = append(items, cheatstyles.Styles.Title.Render(title), "")
 
 	// Add keys ex. Filter list '/'
 	for _, key := range keys {
 		ui := lipgloss.JoinHorizontal(
 			lipgloss.Center,
-			tlockstyles.Dimmed(key.Desc),
+			cheatstyles.Dimmed(key.Desc),
 			strings.Repeat(" ", 65-len(key.Desc)-len(key.Key)),
-			tlockstyles.Title(key.Key),
+			cheatstyles.Title(key.Key),
 		)
 
 		items = append(items, ui, "")
@@ -128,8 +128,8 @@ func BuildHelpMenu() string {
 
 	return lipgloss.JoinVertical(
 		lipgloss.Center,
-		tlockstyles.Styles.Title.Render(helpAsciiArt), "",
-		tlockstyles.Styles.SubText.Render("Keybindings to move around (esc to go back)"), "",
+		cheatstyles.Styles.Title.Render(helpAsciiArt), "",
+		cheatstyles.Styles.SubText.Render("Keybindings to move around (esc to go back)"), "",
 		BuildHelpItem("List", helpKeys.List),
 		BuildHelpItem("Input Form", helpKeys.InputForm),
 	)
@@ -164,7 +164,7 @@ func (screen HelpScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msgType.String() {
 		case "esc":
-			ItemScreen := InitSelectItemScreen()
+			ItemScreen := InitItemScreen()
 			return ItemScreen, nil
 
 		case "ctrl+c":

@@ -13,14 +13,16 @@ import (
 
 	"github.com/Achno/gocheat/config"
 	"github.com/Achno/gocheat/internal/components"
-	tlockstyles "github.com/Achno/gocheat/styles"
+	cheatstyles "github.com/Achno/gocheat/styles"
 )
 
+// gloval var which holds the item of the list
 var items []list.Item
 
+// Init items based on the config.json config file
 func InitItems() {
 
-	items = ConvertSelectItemWrappers(config.GoCheatOptions.Items)
+	items = ConvertItemWrappers(config.GoCheatOptions.Items)
 }
 
 // Controls the filtering mode
@@ -33,13 +35,13 @@ var selectUserAscii = `
 `
 
 // impliments list.Item interface : FilterValue()
-type SelectedItem struct {
+type Item struct {
 	Title string `json:"title"`
 	Tag   string `json:"tag"`
 }
 
 // The value the fuzzy filter , filters by
-func (item SelectedItem) FilterValue() string {
+func (item Item) FilterValue() string {
 	if FilterbyTag {
 		return item.Tag
 	} else {
@@ -47,19 +49,19 @@ func (item SelectedItem) FilterValue() string {
 	}
 }
 
-type SelectItemDelegate struct{}
+type ItemDelegate struct{}
 
-func (delegate SelectItemDelegate) Height() int { return 3 }
+func (delegate ItemDelegate) Height() int { return 3 }
 
 // Spacing
-func (delegate SelectItemDelegate) Spacing() int { return 0 }
+func (delegate ItemDelegate) Spacing() int { return 0 }
 
 // Update
-func (d SelectItemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
+func (d ItemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
 
 // Render
-func (d SelectItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
-	item, ok := listItem.(SelectedItem)
+func (d ItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
+	item, ok := listItem.(Item)
 
 	if !ok {
 		return
@@ -78,7 +80,7 @@ func (d SelectItemDelegate) Render(w io.Writer, m list.Model, index int, listIte
 // Explanation: Keybindings that the list listens on.
 //
 // Impliments: Keymap interface
-type selectItemKeyMap struct {
+type itemKeyMap struct {
 	Up         key.Binding
 	Down       key.Binding
 	Filter     key.Binding
@@ -86,11 +88,11 @@ type selectItemKeyMap struct {
 	FilterMode key.Binding
 }
 
-func (k selectItemKeyMap) ShortHelp() []key.Binding {
+func (k itemKeyMap) ShortHelp() []key.Binding {
 	return []key.Binding{k.Up, k.Down, k.Filter, k.Back, k.FilterMode}
 }
 
-func (k selectItemKeyMap) FullHelp() [][]key.Binding {
+func (k itemKeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{k.Up},
 		{k.Down},
@@ -100,8 +102,8 @@ func (k selectItemKeyMap) FullHelp() [][]key.Binding {
 	}
 }
 
-// Initialize keybin
-var selectItemKeys = selectItemKeyMap{
+// Initialize keybinds
+var selectItemKeys = itemKeyMap{
 	Up: key.NewBinding(
 		key.WithKeys("up", "k"),
 		key.WithHelp("↑/k", "move up"),
@@ -127,23 +129,23 @@ var selectItemKeys = selectItemKeyMap{
 // Model for the select screen
 //
 // Impliments the tea.Model interface : Init() Update() View()
-type SelectItemScreen struct {
+type ItemScreen struct {
 
 	// the List ui model
 	listview list.Model
 }
 
-func InitSelectItemScreen() SelectItemScreen {
-	return SelectItemScreen{
-		listview: components.ListViewSimple(items, SelectItemDelegate{}, 65, min(12, len(items)*3)),
+func InitItemScreen() ItemScreen {
+	return ItemScreen{
+		listview: components.ListViewSimple(items, ItemDelegate{}, 65, min(12, len(items)*3)),
 	}
 }
 
-func (screen SelectItemScreen) Init() tea.Cmd {
+func (screen ItemScreen) Init() tea.Cmd {
 	return nil
 }
 
-func (screen SelectItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (screen ItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
 	// List of cmds to send
@@ -161,7 +163,7 @@ func (screen SelectItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+f":
 			FilterbyTag = !FilterbyTag
 			// For a status msg to be shown the title of the list needs to be visible
-			statusCmd := screen.listview.NewStatusMessage(tlockstyles.Styles.StatusMsg.Render(fmt.Sprintf("Filter by tag: %t", FilterbyTag)))
+			statusCmd := screen.listview.NewStatusMessage(cheatstyles.Styles.StatusMsg.Render(fmt.Sprintf("Filter by tag: %t", FilterbyTag)))
 			return screen, statusCmd
 
 		case "ctrl+h":
@@ -175,9 +177,9 @@ func (screen SelectItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+x":
 			index := screen.listview.Index()
 			screen.listview.RemoveItem(index)
-			statusCmd := screen.listview.NewStatusMessage(tlockstyles.Styles.StatusMsg.Render("Deleted item"))
-			removeItemFromConfig(ConvertListItemsToSelectItemWrappers(items))
-			InitSelectItemScreen()
+			statusCmd := screen.listview.NewStatusMessage(cheatstyles.Styles.StatusMsg.Render("Deleted item"))
+			removeItemFromConfig(ConvertListItemsToItemWrappers(items))
+			InitItemScreen()
 			return screen, statusCmd
 
 		}
@@ -191,14 +193,13 @@ func (screen SelectItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 // View
-func (screen SelectItemScreen) View() string {
+func (screen ItemScreen) View() string {
 	// Set height
 	screen.listview.SetHeight(min(12, len(items)*3))
 
 	// List of items to render
 	items := []string{
-		tlockstyles.Title(selectUserAscii), "",
-		// tlockstyles.Dimmed("Select a user to login as"), "",
+		cheatstyles.Title(selectUserAscii), "",
 		screen.listview.View(), "",
 	}
 
@@ -208,9 +209,8 @@ func (screen SelectItemScreen) View() string {
 	}
 
 	// Add help
-	items = append(items, tlockstyles.HelpView(selectItemKeys))
+	items = append(items, cheatstyles.HelpView(selectItemKeys))
 
-	// Return
 	joinedItems := lipgloss.JoinVertical(
 		lipgloss.Center,
 		items...,
@@ -222,11 +222,11 @@ func (screen SelectItemScreen) View() string {
 	return lipgloss.Place(width, height, lipgloss.Center, lipgloss.Center, joinedItems)
 }
 
-// ConvertSelectItemWrappers converts []SelectItemWrapper to []list.Item
-func ConvertSelectItemWrappers(wrappers []config.SelectItemWrapper) []list.Item {
+// ConverItemWrappers converts []ItemWrapper to []list.Item
+func ConvertItemWrappers(wrappers []config.ItemWrapper) []list.Item {
 	var items []list.Item
 	for _, wrapper := range wrappers {
-		item := SelectedItem{
+		item := Item{
 			Title: wrapper.Title,
 			Tag:   wrapper.Tag,
 		}
@@ -235,19 +235,19 @@ func ConvertSelectItemWrappers(wrappers []config.SelectItemWrapper) []list.Item 
 	return items
 }
 
-// Convert []list.Item to []SelectItemWrapper
-func ConvertListItemsToSelectItemWrappers(items []list.Item) []config.SelectItemWrapper {
-	var wrappers []config.SelectItemWrapper
+// Convert []list.Item to []ItemWrapper
+func ConvertListItemsToItemWrappers(items []list.Item) []config.ItemWrapper {
+	var wrappers []config.ItemWrapper
 	for _, item := range items {
-		// Assert that item is of type SelectedItem
-		selectedItem, ok := item.(SelectedItem)
+		// Assert that item is of type Item
+		selectedItem, ok := item.(Item)
 		if !ok {
-			// Handle the case where item is not of type SelectedItem
-			continue // or return an error or log the issue as needed
+			// Handle the case where item is not of type Item
+			continue
 		}
 
-		// Create SelectItemWrapper from SelectedItem
-		wrapper := config.SelectItemWrapper{
+		// Create ItemWrapper from Item
+		wrapper := config.ItemWrapper{
 			Title: selectedItem.Title,
 			Tag:   selectedItem.Tag,
 		}
@@ -256,10 +256,9 @@ func ConvertListItemsToSelectItemWrappers(items []list.Item) []config.SelectItem
 	return wrappers
 }
 
-// Removes an Item from the config.json
-func removeItemFromConfig(slice []config.SelectItemWrapper) error {
+// Removes an ItemWrapper from the config.json and screen
+func removeItemFromConfig(slice []config.ItemWrapper) error {
 
-	// config.GoCheatOptions.Items = DeepCopySlice(slice)
 	config.GoCheatOptions.Items = slice
 
 	err := config.UpdateConfig()
