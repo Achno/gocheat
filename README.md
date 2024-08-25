@@ -115,7 +115,7 @@ yay -S gocheat
 git clone https://github.com/Achno/gocheat
 cd gocheat
 go build
-sudo cp gowall /usr/local/bin/
+sudo cp gocheat /usr/local/bin/
 gocheat
 ```
 
