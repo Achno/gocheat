@@ -101,7 +101,7 @@ Notes 🗒️: You can modify the `~/.config/gocheat/config.json` directly to ad
 
 # Instalatlion 📦
 
-### Arch linux - AUR ( soon ) 
+### Arch linux - AUR 
 
 ```
 yay -S gocheat
