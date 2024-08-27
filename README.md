@@ -26,7 +26,7 @@
 
 Gocheat is a TUI app which allows you  to create beautiful custom cheatsheets for your keybindings,hotkeys or shell aliases 
 
-> I have hundreds of keybinds and tens of aliases that i cant remember, so i needed something that can look them up in seconds ;)
+> I have hundreds of keybinds and tens of aliases that I can't remember, so I needed something that can look them up in seconds ;)
 
 <br>
 
@@ -50,7 +50,7 @@ https://github.com/user-attachments/assets/cd7039de-203d-47a2-889c-a14639a5e94e
 
 `Tabs` : Tabs which allow you to create multiple cheatsheets, for example one for `keybinds` and one for `shell aliases`
 
-`Pin items`: Pinned items will be shown first before all items so you dont even have to filter frequently forgoten items 
+`Pin items`: Pinned items will be shown first before all items so you dont even have to filter frequently forgotten items 
 
 
 # Themes 🎨
@@ -99,7 +99,7 @@ Once you have launched the TUI you can hit `ctrl+h` to show the Help screen whic
 
 Notes 🗒️: You can modify the `~/.config/gocheat/config.json` directly to add,remove,edit entries
 
-# Instalatlion 📦
+# Installation 📦
 
 ### Arch linux - AUR 
 
