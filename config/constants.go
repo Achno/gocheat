@@ -1,7 +1,7 @@
 package config
 
 const (
-	Version    = "v0.1.0"
+	Version    = "v0.1.1"
 	configFile = "config.json"
 )
 
