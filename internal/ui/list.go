@@ -174,14 +174,12 @@ func (screen ItemScreen) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			InputModel := InitInputFormScreen()
 			return InputModel, cmd
 
-		case "ctrl+x":
-			index := screen.listview.Index()
-			screen.listview.RemoveItem(index)
-			statusCmd := screen.listview.NewStatusMessage(cheatstyles.Styles.StatusMsg.Render("Deleted item"))
-			removeItemFromConfig(ConvertListItemsToItemWrappers(items))
-			InitItemScreen()
-			return screen, statusCmd
+		case "ctrl+k":
+			TableModel := InitTableScreen()
+			return TableModel, cmd
 
+		case "ctrl+x":
+			return HandleRemovingItem(screen)
 		}
 	}
 	// Update listview
@@ -268,4 +266,38 @@ func removeItemFromConfig(slice []config.ItemWrapper) error {
 	}
 
 	return nil
+}
+
+// Removes the selected item from the screen and from config.json
+func HandleRemovingItem(screen ItemScreen) (tea.Model, tea.Cmd) {
+	// check filter state
+	filterState := screen.listview.FilterState()
+
+	if filterState.String() == "filter applied" {
+
+		// We cant get the index of the item with listview.Index() so remove manually
+		itm := screen.listview.SelectedItem()
+		i := itm.(Item)
+
+		for index, v := range items {
+			selectedItem, _ := v.(Item)
+			if selectedItem.Title == i.Title {
+				items = append(items[:index], items[index+1:]...)
+			}
+
+		}
+
+		removeItemFromConfig(ConvertListItemsToItemWrappers(items))
+		s := InitItemScreen()
+		statusCmd := s.listview.NewStatusMessage(cheatstyles.Styles.StatusMsg.Render("Deleted item"))
+
+		return s, statusCmd
+	}
+
+	//Else just delete the item from the screen & config updading only the list and not the screen
+	index := screen.listview.Index()
+	screen.listview.RemoveItem(index)
+	removeItemFromConfig(ConvertListItemsToItemWrappers(items))
+	statusCmd := screen.listview.NewStatusMessage(cheatstyles.Styles.StatusMsg.Render("Deleted item"))
+	return screen, statusCmd
 }

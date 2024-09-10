@@ -1,6 +1,5 @@
 package main
 
-//TODO clean stuff up,
 import (
 	"fmt"
 	"os"
