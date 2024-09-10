@@ -94,6 +94,7 @@ Once you have launched the TUI you can hit `ctrl+h` to show the Help screen whic
 | `ctrl+f`      | Toggle Filter by Tag  | List |
 | `esc`      | Go back to the List screen or exit filtering  | - |
 | `ctrl+c`      | Exit the app  | - |
+| `ctrl+k`      | view your tags| List |
 
 <br>
 
