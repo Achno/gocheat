@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 type ItemWrapper struct {
@@ -52,11 +53,14 @@ func Init() {
 
 // Ensures ~/.config/gocheat/config.json is created with the template and returns the filepath
 func CreateConfig() (string, error) {
+	xdgHome := os.Getenv("XDG_CONFIG_HOME")
 
-	// look for $XDG_CONFIG_HOME/gocheat/config.json or $HOME/.config/gocheat/config.json
+	// look for user config dir. It changes based on OS
 	configDir, err := os.UserConfigDir()
 
-	if err != nil {
+	// this guarantees that in macOS (whose config folder is not ~/.config)
+	// it respects XDG_CONFIG_HOME environment variable if set
+	if (xdgHome != "" && runtime.GOOS == "darwin") || err != nil {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
 			// cant find home or config just give up
